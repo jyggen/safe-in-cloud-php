@@ -1,0 +1,11 @@
+{
+    "require": {
+        "guzzlehttp/guzzle": "~5.2",
+        "ircmaxell/random-lib": "~1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Graceland\\SafeInCloud\\": "src/"
+        }
+    }
+}
