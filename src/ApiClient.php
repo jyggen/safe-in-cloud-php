@@ -65,6 +65,8 @@ class ApiClient
         $this->keyIsRegistered = $this->makeRequest('handshake', [
             'key' => base64_encode($this->encrypter->getKey()),
         ]);
+
+        return $this->keyIsRegistered;
     }
 
     protected function shakeHands()
