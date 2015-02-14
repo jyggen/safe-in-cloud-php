@@ -1,7 +1,6 @@
 {
     "require": {
-        "guzzlehttp/guzzle": "~5.2",
-        "ircmaxell/random-lib": "~1.1"
+        "guzzlehttp/guzzle": "~5.2"
     },
     "autoload": {
         "psr-4": {
