@@ -26,15 +26,16 @@ class Encrypter
     public function decrypt($value, $iv)
     {
         $value = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->key, $value, MCRYPT_MODE_CBC, $iv);
-        return base64_decode($this->stripPadding($value));
+        return $this->stripPadding($value);
     }
+
     public function encrypt($value, $iv = null)
     {
         if ($iv === null) {
             $iv = $this->generateIv();
         }
 
-        $value = $this->addPadding(base64_encode($value));
+        $value = $this->addPadding($value);
         return mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->key, $value, MCRYPT_MODE_CBC, $iv);
     }
 

@@ -41,7 +41,7 @@ class ApiClient
         $payload  = array_merge([
             'type'     => $type,
             'nonce'    => base64_encode($nonce),
-            'verifier' => base64_encode($this->encrypter->encrypt($nonce, $nonce)),
+            'verifier' => base64_encode($this->encrypter->encrypt(base64_encode($nonce), $nonce)),
         ], $additionalData);
 
         foreach ($payload as $key => $data) {
@@ -56,6 +56,8 @@ class ApiClient
                 'content-type' => 'application/json',
             ],
         ]);
+
+        var_dump($response->json());
 
         return $this->validateResponse($response);
     }
@@ -104,7 +106,7 @@ class ApiClient
         }
 
         $nonce    = base64_decode($body['nonce']);
-        $verifier = $this->encrypter->decrypt(base64_decode($body['verifier']), $nonce);
+        $verifier = base64_decode($this->encrypter->decrypt(base64_decode($body['verifier']), $nonce));
 
         return $verifier === $nonce;
     }
