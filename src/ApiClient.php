@@ -7,9 +7,6 @@ use RandomLib\Generator;
 
 class ApiClient
 {
-    const NEVER_EXPIRES = -1;
-    const ONE_TIME      = -2;
-    const HOUR          = 3600;
     const LOCALHOST_URL = 'http://localhost:19756/';
 
     protected $client;
@@ -24,6 +21,20 @@ class ApiClient
         $this->encrypter = $encrypter;
     }
 
+    public function authenticate($password)
+    {
+        $this->shakeHands();
+
+        if ($this->makeRequest('authenticate', [
+            'expiresin' => 3600,
+            'password'  => function ($payload) use ($password) {
+                return base64_encode($this->encrypter->encrypt($password, base64_decode($payload['nonce'])));
+            },
+        ]) === false) {
+            throw new \RuntimeException('Unable to authenticate against the API.');
+        }
+    }
+
     protected function makeRequest($type, array $additionalData = [])
     {
         $nonce    = $this->encrypter->generateIv();
@@ -32,6 +43,12 @@ class ApiClient
             'nonce'    => base64_encode($nonce),
             'verifier' => base64_encode($this->encrypter->encrypt($nonce, $nonce)),
         ], $additionalData);
+
+        foreach ($payload as $key => $data) {
+            if (is_callable($data) === true) {
+                $payload[$key] = $data($payload);
+            }
+        }
 
         $response = $this->client->post(static::LOCALHOST_URL, [
             'body'    => json_encode($payload),
@@ -45,17 +62,19 @@ class ApiClient
 
     protected function registerKey()
     {
-        if ($this->makeRequest('handshake', [
+        $this->keyIsRegistered = $this->makeRequest('handshake', [
             'key' => base64_encode($this->encrypter->getKey()),
-        ])) {
-            $this->keyIsRegistered = true;
-        }
+        ]);
     }
 
     protected function shakeHands()
     {
-        if ($this->validateKey() === false) {
-            $this->registerKey();
+        if ($this->validateKey() === true) {
+            return;
+        }
+
+        if ($this->registerKey() === false or $this->validateKey() === false) {
+            throw new \RuntimeException('Unable to register key with the API.');
         }
     }
 
