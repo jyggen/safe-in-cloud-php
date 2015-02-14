@@ -57,8 +57,6 @@ class ApiClient
             ],
         ]);
 
-        var_dump($response->json());
-
         return $this->validateResponse($response);
     }
 
