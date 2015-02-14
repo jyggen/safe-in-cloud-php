@@ -23,17 +23,19 @@ class Encrypter
         $this->key = $key;
     }
 
-    public function encrypt($string, $iv = null)
+    public function decrypt($value, $iv)
+    {
+        $value = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->key, $value, MCRYPT_MODE_CBC, $iv);
+        return base64_decode($this->stripPadding($value));
+    }
+    public function encrypt($value, $iv = null)
     {
         if ($iv === null) {
             $iv = $this->generateIv();
         }
 
-        $string = base64_encode($string);
-        $pad    = static::BLOCK_SIZE - (strlen($string) % static::BLOCK_SIZE);
-        $string = $string.str_repeat(chr($pad), $pad);
-
-        return mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->key, $string, MCRYPT_MODE_CBC, $iv);
+        $value = $this->addPadding(base64_encode($value));
+        return mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->key, $value, MCRYPT_MODE_CBC, $iv);
     }
 
     public function generateIv()
@@ -44,6 +46,14 @@ class Encrypter
     public function getKey()
     {
         return $this->key;
+    }
+
+    protected function addPadding($value)
+    {
+        $pad   = static::BLOCK_SIZE - (strlen($value) % static::BLOCK_SIZE);
+        $value = $value.str_repeat(chr($pad), $pad);
+
+        return $value;
     }
 
     protected function getRandomizer()
@@ -58,5 +68,17 @@ class Encrypter
 
         mt_srand();
         return MCRYPT_RAND;
+    }
+
+    protected function paddingIsValid($pad, $value)
+    {
+        $beforePad = strlen($value) - $pad;
+        return substr($value, $beforePad) == str_repeat(substr($value, -1), $pad);
+    }
+
+    protected function stripPadding($value)
+    {
+        $pad = ord($value[($len = strlen($value)) - 1]);
+        return $this->paddingIsValid($pad, $value) ? substr($value, 0, $len - $pad) : $value;
     }
 }

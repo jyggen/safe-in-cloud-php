@@ -37,6 +37,19 @@ class ApiClient
             ],
         ]);
 
-        return $response->json();
+        if ($response->getStatusCode() < 200 or  $response->getStatusCode() >= 300) {
+            return false;
+        }
+
+        $body = $response->json();
+
+        if ($body['success'] !== true) {
+            return false;
+        }
+
+        $nonce    = base64_decode($body['nonce']);
+        $verifier = $this->encrypter->decrypt(base64_decode($body['verifier']), $nonce);
+
+        return $verifier === $nonce;
     }
 }

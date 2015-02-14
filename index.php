@@ -10,4 +10,4 @@ $key       = Encrypter::generateKey();
 $encrypter = new Encrypter($key);
 $client    = new ApiClient($guzzle, $encrypter);
 
-var_dump($key, $client->shakeHands());
+var_dump($client->shakeHands());
