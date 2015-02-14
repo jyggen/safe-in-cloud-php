@@ -2,6 +2,7 @@
 namespace Graceland\SafeInCloud;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Message\Response;
 use RandomLib\Generator;
 
 class ApiClient
@@ -12,7 +13,10 @@ class ApiClient
     const LOCALHOST_URL = 'http://localhost:19756/';
 
     protected $client;
+
     protected $encrypter;
+
+    protected $keyIsRegistered = false;
 
     public function __construct(Client $client, Encrypter $encrypter)
     {
@@ -20,15 +24,14 @@ class ApiClient
         $this->encrypter = $encrypter;
     }
 
-    public function shakeHands()
+    protected function makeRequest($type, array $additionalData = [])
     {
         $nonce    = $this->encrypter->generateIv();
-        $payload  = [
-            'type'     => 'handshake',
-            'key'      => base64_encode($this->encrypter->getKey()),
+        $payload  = array_merge([
+            'type'     => $type,
             'nonce'    => base64_encode($nonce),
             'verifier' => base64_encode($this->encrypter->encrypt($nonce, $nonce)),
-        ];
+        ], $additionalData);
 
         $response = $this->client->post(static::LOCALHOST_URL, [
             'body'    => json_encode($payload),
@@ -37,13 +40,45 @@ class ApiClient
             ],
         ]);
 
-        if ($response->getStatusCode() < 200 or  $response->getStatusCode() >= 300) {
+        return $this->validateResponse($response);
+    }
+
+    protected function registerKey()
+    {
+        if ($this->makeRequest('handshake', [
+            'key' => base64_encode($this->encrypter->getKey()),
+        ])) {
+            $this->keyIsRegistered = true;
+        }
+    }
+
+    protected function shakeHands()
+    {
+        if ($this->validateKey() === false) {
+            $this->registerKey();
+        }
+    }
+
+    protected function validateKey()
+    {
+        if ($this->keyIsRegistered === false) {
+            return false;
+        }
+
+        return $this->makeRequest('test_handshake', [
+            'key' => base64_encode($this->encrypter->getKey()),
+        ]);
+    }
+
+    protected function validateResponse(Response $response)
+    {
+        if ($response->getStatusCode() < 200 or $response->getStatusCode() >= 300) {
             return false;
         }
 
         $body = $response->json();
 
-        if ($body['success'] !== true) {
+        if (isset($body['nonce']) === false or isset($body['verifier']) === false) {
             return false;
         }
 
