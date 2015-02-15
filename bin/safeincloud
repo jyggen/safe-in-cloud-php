@@ -6,14 +6,14 @@ use Symfony\Component\Console\Application;
 
 foreach (array(__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php') as $file) {
     if (file_exists($file)) {
-        define('PHPUNIT_COMPOSER_INSTALL', $file);
+        define('COMPOSER_INSTALL', $file);
         break;
     }
 }
 
 unset($file);
 
-if (!defined('PHPUNIT_COMPOSER_INSTALL')) {
+if (!defined('COMPOSER_INSTALL')) {
     fwrite(STDERR,
         'You need to set up the project dependencies using the following commands:' . PHP_EOL .
         'wget http://getcomposer.org/composer.phar' . PHP_EOL .
@@ -22,7 +22,7 @@ if (!defined('PHPUNIT_COMPOSER_INSTALL')) {
     die(1);
 }
 
-require PHPUNIT_COMPOSER_INSTALL;
+require COMPOSER_INSTALL;
 
 $console = new Application('SafeInCloud Password Manager', '1.0-dev');
 $console->add(new AuthenticateCommand(ApiClient::create()));
