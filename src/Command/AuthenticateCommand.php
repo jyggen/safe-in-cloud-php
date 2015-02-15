@@ -34,15 +34,10 @@ class AuthenticateCommand extends Command
         $password = $helper->ask($input, $output, $question);
 
         if ($this->client->authenticate($password) === false) {
-            $formatter      = $this->getHelper('formatter');
-            $errorMessages  = ['An error has occurred!', 'Unable to authenticate, did you enter the correct password?'];
-            $formattedBlock = $formatter->formatBlock($errorMessages, 'error', true);
-
-            $output->writeln('');
-            $output->writeln($formattedBlock);
-            return 1;
+            throw new \RuntimeException('Unable to authenticate, did you enter the correct password?');
         }
 
+        $output->writeln($this->client->getAuthToken());
         return 0;
     }
 }
