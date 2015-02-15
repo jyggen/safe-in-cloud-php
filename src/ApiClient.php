@@ -47,12 +47,12 @@ class ApiClient
         }
 
         if ($response->isSuccessful() === false || $response->has('token') === false) {
-            return false;
+            return null;
         }
 
         $this->token = $response->getDecrypted('token');
 
-        return ($this->token !== null);
+        return $this->token;
     }
 
     /**
@@ -122,13 +122,13 @@ class ApiClient
 
     public function doHandshake()
     {
-        if ($this->encryptionKeyIsRegistered() === true) {
+        if ($this->isEncryptionKeyRegistered() === true) {
             return;
         }
 
         $this->registerEncryptionKey();
 
-        if ($this->encryptionKeyIsRegistered() === false) {
+        if ($this->isEncryptionKeyRegistered() === false) {
             throw new \RuntimeException('Unable to register key with the API.');
         }
     }
@@ -138,7 +138,7 @@ class ApiClient
         $this->token = $token;
     }
 
-    protected function encryptionKeyIsRegistered()
+    protected function isEncryptionKeyRegistered()
     {
         if ($this->registered === false) {
             return false;
