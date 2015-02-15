@@ -73,7 +73,7 @@ class Encrypter
         return MCRYPT_RAND;
     }
 
-    protected function paddingIsValid($pad, $value)
+    protected function isPaddingValid($pad, $value)
     {
         $beforePad = strlen($value) - $pad;
         return substr($value, $beforePad) == str_repeat(substr($value, -1), $pad);
@@ -85,6 +85,6 @@ class Encrypter
     protected function stripPadding($value)
     {
         $pad = ord($value[($len = strlen($value)) - 1]);
-        return $this->paddingIsValid($pad, $value) ? substr($value, 0, $len - $pad) : $value;
+        return $this->isPaddingValid($pad, $value) ? substr($value, 0, $len - $pad) : $value;
     }
 }
