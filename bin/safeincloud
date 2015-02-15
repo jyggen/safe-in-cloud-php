@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 use Graceland\SafeInCloud\ApiClient;
+use Graceland\SafeInCloud\Command\AccountCommand;
 use Graceland\SafeInCloud\Command\AuthenticateCommand;
 use Symfony\Component\Console\Application;
 
@@ -24,6 +25,8 @@ if (!defined('COMPOSER_INSTALL')) {
 
 require COMPOSER_INSTALL;
 
+$client  = ApiClient::create();
 $console = new Application('SafeInCloud Password Manager', '1.0-dev');
-$console->add(new AuthenticateCommand(ApiClient::create()));
+$console->add(new AccountCommand($client));
+$console->add(new AuthenticateCommand($client));
 $console->run();
