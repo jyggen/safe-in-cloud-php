@@ -6,3 +6,17 @@
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/jyggen/safe-in-cloud-php.svg?style=flat-square)](https://scrutinizer-ci.com/g/jyggen/safe-in-cloud-php/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/jyggen/safe-in-cloud-php.svg?style=flat-square)](https://scrutinizer-ci.com/g/jyggen/safe-in-cloud-php)
 [![Total Downloads](https://img.shields.io/packagist/dt/jyggen/safe-in-cloud-php.svg?style=flat-square)](https://packagist.org/packages/jyggen/safe-in-cloud-php)
+
+An API client and CLI tool to work and communicate with the HTTP API built into the SafeInCloud software. This package is compliant with [PSR-1], [PSR-2] and [PSR-4].
+
+- [Find on Packagist/Composer](https://packagist.org/packages/jyggen/safe-in-cloud-php)
+
+[PSR-1]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md
+[PSR-2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
+[PSR-4]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md
+
+## License
+
+The MIT License (MIT). Please see [License File](https://github.com/pwnraid/bnet/blob/master/LICENSE) for more information.
+
+This software is not endorsed, sponsored, affiliated with or otherwise authorized by SafeInCloud.
