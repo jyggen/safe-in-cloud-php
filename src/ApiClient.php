@@ -46,7 +46,7 @@ class ApiClient
             throw new \RuntimeException('Unable to authenticate against the API.');
         }
 
-        if ($response->isSuccessful() === false or $response->has('token') === false) {
+        if ($response->isSuccessful() === false || $response->has('token') === false) {
             return false;
         }
 
@@ -55,11 +55,17 @@ class ApiClient
         return ($this->token !== null);
     }
 
+    /**
+     * @return string
+    */
     public function getAuthToken()
     {
         return $this->token;
     }
 
+    /**
+     * @return array
+    */
     public function getLogins()
     {
         if ($this->token === null) {
@@ -78,13 +84,16 @@ class ApiClient
             throw new \RuntimeException('Unable to retrieve logins from the API.');
         }
 
-        if ($response->isSuccessful() === false or $response->has('logins') === false) {
+        if ($response->isSuccessful() === false || $response->has('logins') === false) {
             return [];
         }
 
         return $response->get('logins', []);
     }
 
+    /**
+     * @return array
+    */
     public function getWebAccounts($url)
     {
         if ($this->token === null) {
@@ -104,7 +113,7 @@ class ApiClient
             throw new \RuntimeException('Unable to retrieve web accounts from the API.');
         }
 
-        if ($response->isSuccessful() === false or $response->has('accounts') === false) {
+        if ($response->isSuccessful() === false || $response->has('accounts') === false) {
             return [];
         }
 
@@ -141,7 +150,7 @@ class ApiClient
 
         $response = $this->send($request);
 
-        return ($response->isValid() and $response->isSuccessful());
+        return ($response->isValid() && $response->isSuccessful());
     }
 
     protected function registerEncryptionKey()
@@ -151,13 +160,13 @@ class ApiClient
         $request->addEncodedData('key', $this->factory->getEncrypter()->getKey());
 
         $response         = $this->send($request);
-        $this->registered = ($response->isValid() and $response->isSuccessful());
+        $this->registered = ($response->isValid() && $response->isSuccessful());
     }
 
     protected function send(Request $request)
     {
         $response = $this->client->post(static::LOCALHOST_URL, [
-            'body'    => json_encode($request->getPayload()),
+            'body' => json_encode($request->getPayload()),
             'headers' => [
                 'content-type' => 'application/json',
             ],

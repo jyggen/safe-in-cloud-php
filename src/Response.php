@@ -18,6 +18,9 @@ class Response
         $this->body      = $this->response->json();
     }
 
+    /**
+     * @return mixed
+    */
     public function get($key, $default = null)
     {
         if ($this->has($key) === false) {
@@ -27,6 +30,9 @@ class Response
         return $this->body[$key];
     }
 
+    /**
+     * @return mixed
+    */
     public function getDecrypted($key, $default = null)
     {
         if ($this->has($key) === false) {
@@ -43,16 +49,16 @@ class Response
 
     public function isSuccessful()
     {
-        return (isset($this->body['success']) === true and $this->body['success'] === true);
+        return (isset($this->body['success']) === true && $this->body['success'] === true);
     }
 
     public function isValid()
     {
-        if ($this->response->getStatusCode() < 200 or $this->response->getStatusCode() >= 300) {
+        if ($this->response->getStatusCode() < 200 || $this->response->getStatusCode() >= 300) {
             return false;
         }
 
-        if (isset($this->body['nonce']) === false or isset($this->body['verifier']) === false) {
+        if (isset($this->body['nonce']) === false || isset($this->body['verifier']) === false) {
             return false;
         }
 
@@ -62,6 +68,9 @@ class Response
         return $verifier === $this->body['nonce'];
     }
 
+    /**
+     * @return string
+    */
     protected function decrypt($data, $nonce = null)
     {
         if ($nonce === null) {

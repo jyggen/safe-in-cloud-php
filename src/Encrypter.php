@@ -23,20 +23,19 @@ class Encrypter
         $this->key = $key;
     }
 
-    public function decrypt($value, $iv)
+    /**
+     * @return string
+    */
+    public function decrypt($value, $nonce)
     {
-        $value = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->key, $value, MCRYPT_MODE_CBC, $iv);
+        $value = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->key, $value, MCRYPT_MODE_CBC, $nonce);
         return $this->stripPadding($value);
     }
 
-    public function encrypt($value, $iv = null)
+    public function encrypt($value, $nonce)
     {
-        if ($iv === null) {
-            $iv = $this->generateIv();
-        }
-
         $value = $this->addPadding($value);
-        return mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->key, $value, MCRYPT_MODE_CBC, $iv);
+        return mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->key, $value, MCRYPT_MODE_CBC, $nonce);
     }
 
     public function generateIv()
@@ -44,6 +43,9 @@ class Encrypter
         return mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC), $this->getRandomizer());
     }
 
+    /**
+     * @return string
+    */
     public function getKey()
     {
         return $this->key;
@@ -77,6 +79,9 @@ class Encrypter
         return substr($value, $beforePad) == str_repeat(substr($value, -1), $pad);
     }
 
+    /**
+     * @return string
+    */
     protected function stripPadding($value)
     {
         $pad = ord($value[($len = strlen($value)) - 1]);
