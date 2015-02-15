@@ -57,6 +57,11 @@ class ApiClient
         return ($this->token !== null);
     }
 
+    public function getAuthToken()
+    {
+        return $this->token;
+    }
+
     public function getLogins()
     {
         if ($this->token === null) {
@@ -119,6 +124,11 @@ class ApiClient
         if ($this->encryptionKeyIsRegistered() === false) {
             throw new \RuntimeException('Unable to register key with the API.');
         }
+    }
+
+    public function setAuthToken($token)
+    {
+        $this->token = $token;
     }
 
     protected function encryptionKeyIsRegistered()
