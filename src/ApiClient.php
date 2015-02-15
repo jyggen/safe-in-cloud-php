@@ -3,8 +3,6 @@ namespace Graceland\SafeInCloud;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Message\Response;
-use RandomLib\Generator;
 
 class ApiClient
 {

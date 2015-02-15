@@ -20,7 +20,7 @@ class MessageFactory
 
     public function createResponse(ResponseInterface $response, Request $request)
     {
-        return new Response($response, $request, $this->encrypter);
+        return new Response($response, $request);
     }
 
     public function getEncrypter()
