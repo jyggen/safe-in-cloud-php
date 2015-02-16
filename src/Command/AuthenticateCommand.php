@@ -33,6 +33,8 @@ class AuthenticateCommand extends Command
 
         $password = $helper->ask($input, $output, $question);
 
+        $this->client->doHandshake();
+
         if ($this->client->authenticate($password) === null) {
             throw new \RuntimeException('Unable to authenticate, did you enter the correct password?');
         }

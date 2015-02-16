@@ -31,7 +31,10 @@ class AccountCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->client->setAuthToken($input->getOption('token'));
+        $this->client->doHandshake();
+
         $accounts = $this->client->getWebAccounts($input->getArgument('url'));
+
         $output->writeln(json_encode($accounts));
         return 0;
     }

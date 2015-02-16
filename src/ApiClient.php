@@ -33,8 +33,6 @@ class ApiClient
 
     public function authenticate($password)
     {
-        $this->doHandshake();
-
         $request = $this->factory->createRequest('authenticate');
 
         $request->addData('expiresin', 3600);
@@ -72,8 +70,6 @@ class ApiClient
             throw new \RuntimeException('You need to be authenticated before making this request.');
         }
 
-        $this->doHandshake();
-
         $request = $this->factory->createRequest('get_logins');
 
         $request->addEncryptedData('token', $this->token);
@@ -99,8 +95,6 @@ class ApiClient
         if ($this->token === null) {
             throw new \RuntimeException('You need to be authenticated before making this request.');
         }
-
-        $this->doHandshake();
 
         $request = $this->factory->createRequest('get_web_accounts_2');
 
