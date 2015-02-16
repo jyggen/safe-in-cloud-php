@@ -16,7 +16,7 @@ class Request
     public function __construct($type, Encrypter $encrypter)
     {
         $this->encrypter = $encrypter;
-        $this->nonce     = $this->encrypter->generateIv();
+        $this->nonce     = $this->encrypter->generateNonce();
         $this->type      = $type;
 
         $this->setupPayload();
