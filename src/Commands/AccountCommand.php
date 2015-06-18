@@ -1,5 +1,5 @@
 <?php
-namespace Graceland\SafeInCloud\Command;
+namespace Graceland\SafeInCloud\Commands;
 
 use Graceland\SafeInCloud\ApiClient;
 use Symfony\Component\Console\Command\Command;

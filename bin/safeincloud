@@ -1,8 +1,9 @@
 #!/usr/bin/env php
 <?php
 use Graceland\SafeInCloud\ApiClient;
-use Graceland\SafeInCloud\Command\AccountCommand;
-use Graceland\SafeInCloud\Command\AuthenticateCommand;
+use Graceland\SafeInCloud\Commands\AccountCommand;
+use Graceland\SafeInCloud\Commands\AuthenticateCommand;
+use Graceland\SafeInCloud\Commands\LoginCommand;
 use Symfony\Component\Console\Application;
 
 foreach (array(__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php') as $file) {
@@ -29,4 +30,5 @@ $client  = ApiClient::create();
 $console = new Application('SafeInCloud Password Manager', '1.0-dev');
 $console->add(new AccountCommand($client));
 $console->add(new AuthenticateCommand($client));
+$console->add(new LoginCommand($client));
 $console->run();

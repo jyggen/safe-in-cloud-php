@@ -6,7 +6,11 @@ use GuzzleHttp\ClientInterface;
 
 class ApiClient
 {
-    const LOCALHOST_URL = 'http://localhost:19756/';
+    const EXPIRATION_HOUR  = 3600;
+    const EXPIRATION_NEVER = -1;
+    const EXPIRATION_ONCE  = -2;
+
+    const URL = 'http://localhost:19756/';
 
     protected $client;
 
@@ -35,7 +39,7 @@ class ApiClient
     {
         $request = $this->factory->createRequest('authenticate');
 
-        $request->addData('expiresin', 3600);
+        $request->addData('expiresin', static::EXPIRATION_HOUR);
         $request->addEncryptedData('password', $password);
 
         $response = $this->send($request);
@@ -45,7 +49,7 @@ class ApiClient
         }
 
         if ($response->isSuccessful() === false || $response->has('token') === false) {
-            return null;
+            throw new \RuntimeException('Authenticated unsuccessfully, invalid password?');
         }
 
         $this->token = $response->getDecrypted('token');
@@ -81,10 +85,10 @@ class ApiClient
         }
 
         if ($response->isSuccessful() === false || $response->has('logins') === false) {
-            return [];
+            throw new \RuntimeException('Retrieved web accounts unsuccessfully, invalid authentication token?');
         }
 
-        return $response->get('logins', []);
+        return $response->getDecrypted('logins', []);
     }
 
     /**
@@ -108,10 +112,10 @@ class ApiClient
         }
 
         if ($response->isSuccessful() === false || $response->has('accounts') === false) {
-            return [];
+            throw new \RuntimeException('Retrieved web accounts unsuccessfully, invalid authentication token?');
         }
 
-        return $response->get('accounts', []);
+        return $response->getDecrypted('accounts', [], ['login', 'password']);
     }
 
     public function doHandshake()
@@ -159,7 +163,7 @@ class ApiClient
 
     protected function send(Request $request)
     {
-        $response = $this->client->post(static::LOCALHOST_URL, [
+        $response = $this->client->post(static::URL, [
             'body' => json_encode($request->getPayload()),
             'headers' => [
                 'content-type' => 'application/json',

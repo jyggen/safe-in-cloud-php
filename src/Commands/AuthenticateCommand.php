@@ -1,5 +1,5 @@
 <?php
-namespace Graceland\SafeInCloud\Command;
+namespace Graceland\SafeInCloud\Commands;
 
 use Graceland\SafeInCloud\ApiClient;
 use Symfony\Component\Console\Command\Command;
@@ -34,12 +34,8 @@ class AuthenticateCommand extends Command
         $password = $helper->ask($input, $output, $question);
 
         $this->client->doHandshake();
+        $output->writeln($this->client->authenticate($password));
 
-        if ($this->client->authenticate($password) === null) {
-            throw new \RuntimeException('Unable to authenticate, did you enter the correct password?');
-        }
-
-        $output->writeln($this->client->getAuthToken());
         return 0;
     }
 }
