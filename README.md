@@ -15,6 +15,26 @@ An API client and CLI tool to work and communicate with the HTTP API built into 
 [PSR-2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
 [PSR-4]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md
 
+## Usage
+
+First you need to run the command `authenticate` to get an authentication token from your SafeInCloud client.
+
+```bash
+./bin/safeincloud authenticate
+Enter your password:
+lWg/CBmrcEs6XiAgXl33qg==
+```
+
+```bash
+./bin/safeincloud accounts --token lWg/CBmrcEs6XiAgXl33qg== example.com
+[{"title":"example.com","login":"foo","password":"bar"}]
+```
+
+```bash
+./bin/safeincloud logins --token lWg/CBmrcEs6XiAgXl33qg==
+["foo","bar","baz","qux"]
+```
+
 ## License
 
 The MIT License (MIT). Please see [License File](https://github.com/pwnraid/bnet/blob/master/LICENSE) for more information.
