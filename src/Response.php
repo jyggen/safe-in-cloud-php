@@ -33,13 +33,15 @@ class Response
     /**
      * @return mixed
     */
-    public function getDecrypted($key, $default = null)
+    public function getDecrypted($key, $default = null, $assocKeys = [])
     {
-        if ($this->has($key) === false) {
+        $value = $this->get($key, $default);
+
+        if ($value === $default) {
             return $default;
         }
 
-        return $this->decrypt($this->body[$key]);
+        return $this->decrypt($value, null, $assocKeys);
     }
 
     public function has($key)
@@ -71,12 +73,28 @@ class Response
     /**
      * @return string
     */
-    protected function decrypt($data, $nonce = null)
+    protected function decrypt($data, $nonce = null, $assocKeys = [])
     {
         if ($nonce === null) {
             $nonce = $this->request->getNonce();
         }
 
-        return $this->encrypter->decrypt(base64_decode($data), $nonce);
+        if (is_array($data) === false) {
+            return $this->encrypter->decrypt(base64_decode($data), $nonce);
+        }
+
+        $decrypted = [];
+        $isAssoc   = (bool) count(array_filter(array_keys($data), 'is_string'));
+
+        foreach ($data as $key => $value) {
+            if ($isAssoc === true and in_array($key, $assocKeys) === false) {
+                $decrypted[$key] = $value;
+                continue;
+            }
+
+            $decrypted[$key] = $this->decrypt($value, $nonce, $assocKeys);
+        }
+
+        return $decrypted;
     }
 }
