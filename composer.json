@@ -1,5 +1,23 @@
 {
+    "name": "graceland/safe-in-cloud",
+    "description": "Library for working with the Safe in Cloud JSON API.",
+    "keywords": ["Safe in Cloud", "API", "CLI"],
+    "homepage": "https://github.com/jyggen/safe-in-cloud-php",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jonas Stendahl",
+            "email": "jonas@stendahl.me",
+            "homepage": "https://stendahl.me"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/jyggen/safe-in-cloud-php/issues",
+        "source": "https://github.com/jyggen/safe-in-cloud-php"
+    },
     "require": {
+        "php": ">=5.4",
         "guzzlehttp/guzzle": "~5.0",
         "symfony/console": "~2.6"
     },
